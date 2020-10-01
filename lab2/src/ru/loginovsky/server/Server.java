@@ -109,7 +109,6 @@ public class Server {
             bytesCount = socketIn.read(buf);
             finishTime = System.nanoTime();
             if (bytesCount != -1) {
-                //System.out.println("inside");
                 fileOut.write(buf, 0, bytesCount);
                 totalBytesCount += bytesCount;
                 lastBytes = bytesCount;
