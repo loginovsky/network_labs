@@ -31,6 +31,7 @@ public class Client {
             byte[] answer = new byte[ANSWER_SIZE];
             socketIn.read(answer);
             if (answer[0] != YES_ANSWER) {
+                System.out.println("Server rejected file " + file.getName());
                 return;
             }
             int bytesCount;
@@ -45,8 +46,6 @@ public class Client {
             } else {
                 System.out.println("Upload was unsuccessful");
             }
-            socketIn.close();
-            socketOut.close();
         } catch (FileNotFoundException e) {
             System.out.println("File " + args[0] + " does not exist");
         } catch (IOException e) {
