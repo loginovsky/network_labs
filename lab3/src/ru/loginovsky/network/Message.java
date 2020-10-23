@@ -9,8 +9,6 @@ import static ru.loginovsky.network.NetworkConstants.*;
 public class Message {
 
     private MessageType msgType;
-    private byte msgOrder;
-    private final byte[] length = new byte[LENGTH_SIZE];
     private String msgStr;
     public Message(MessageType type, String msgString) {
         this.msgType = type;
@@ -33,9 +31,10 @@ public class Message {
             UUID uuid = UUID.randomUUID();
             byte[] uuidBuf = Message.uuidToByteArr(uuid);
             buf[0] = msgType.getMsgType();
+            //buf[1] = (byte) (senderPort >> 8);
+            //buf[2] = (byte) (senderPort & 255);
             buf[1] = numOfChunks;
             buf[2] = orderOfChunks++;
-            //System.out.println("BUFSIZE="+bufSize);
             buf[3] =(byte) (bufSize >> 8);
             buf[4] =(byte) (bufSize & 255);
             System.arraycopy(uuidBuf, 0, buf, HEADER_SIZE - UUID_SIZE, UUID_SIZE);
@@ -81,7 +80,8 @@ public class Message {
         System.arraycopy(buf, HEADER_SIZE - UUID_SIZE, byteArr, 0, 16);
         return Message.byteArrToUUID(byteArr);
     }
+    //public static int getPortFromBuf(byte[] buf) { return ((buf[3] << 8) | buf[4]); }
     public static int getLenFromBuf(byte[] buf) {
-        return ((buf[3]<<8) | buf[4]);
+        return ((buf[3] << 8) | buf[4]);
     }
 }
