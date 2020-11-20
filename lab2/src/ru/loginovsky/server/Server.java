@@ -98,27 +98,21 @@ public class Server {
                 startIntervalTime = System.nanoTime();
                 firstTime = false;
             } else if (finishTime - startIntervalTime > TIME_INTERVAL) {
-                System.out.println(filename);
-                System.out.println("Current speed: " + ((long)bytesCount * 1_000_000L / (finishTime - startTime)) + " Kb/s");
-                System.out.println("Average speed: " + (totalBytesCount * 1_000_000L / (finishTime - beforeTime)) + " Kb/s");
-                System.out.println();
+                printSpeed(filename, bytesCount, totalBytesCount, beforeTime, startTime, finishTime);
                 startIntervalTime = System.nanoTime();
                 statsPrinted = true;
             }
             startTime = System.nanoTime();
             bytesCount = socketIn.read(buf);
-            finishTime = System.nanoTime();
             if (bytesCount != -1) {
                 fileOut.write(buf, 0, bytesCount);
                 totalBytesCount += bytesCount;
                 lastBytes = bytesCount;
             }
+            finishTime = System.nanoTime();
         }
         if(!statsPrinted) {
-            System.out.println(filename);
-            System.out.println("Current speed: " + ((long) lastBytes * 1_000_000L / (finishTime - startTime)) + " Kb/s");
-            System.out.println("Average speed: " + (totalBytesCount * 1_000_000L / (finishTime - beforeTime)) + " Kb/s");
-            System.out.println();
+            printSpeed(filename, lastBytes, totalBytesCount, beforeTime, startTime, finishTime);
         }
         fileOut.close();
         return totalBytesCount;
@@ -135,5 +129,11 @@ public class Server {
             i++;
         }
         return newFilename;
+    }
+    static void printSpeed(String filename, long bytesCount, long totalBytesCount, long beforeTime, long startTime, long finishTime) {
+        System.out.println(filename);
+        System.out.println("Current speed: " + (bytesCount * 1_000_000L / (finishTime - startTime)) + " Kb/s");
+        System.out.println("Average speed: " + (totalBytesCount * 1_000_000L / (finishTime - beforeTime)) + " Kb/s");
+        System.out.println();
     }
 }
